@@ -1963,22 +1963,23 @@ def build():
         alignment=TA_CENTER, spaceAfter=30)))
     story.append(Paragraph(zsp('產出日期：2026-08-19（星期三）'), ParagraphStyle(
         'CoverSub', fontName=ZH, fontSize=12, leading=18, textColor=GRAY, alignment=TA_CENTER, spaceAfter=6)))
-    story.append(Paragraph(zsp('涵蓋範圍：TLDR 14 份子報全主題（Tech／Dev／AI／InfoSec／Product／DevOps／Founders／Design／Marketing／Crypto／Fintech／IT／Data／Hardware），收錄每份子報全部主打文章（不含 Quick Links），並自動過濾與前一日內容重複的報導'), ParagraphStyle(
+    story.append(Paragraph(zsp('涵蓋範圍：TLDR 14 份子報全主題（Tech／Dev／AI／InfoSec／Product／DevOps／Founders／Design／Marketing／Crypto／Fintech／IT／Data／Hardware），每一主題精選 2 篇最重要的 hot 新聞，並自動過濾與前一日內容重複的報導'), ParagraphStyle(
         'CoverSub2', fontName=ZH, fontSize=10.5, leading=17, textColor=GRAY, alignment=TA_CENTER, spaceAfter=4)))
     story.append(Paragraph(zsp('每篇文章來源日期以各子報實際最新一期為準（2026-08-17 或 2026-08-18）'), ParagraphStyle(
         'CoverSub3', fontName=ZH, fontSize=9.5, leading=15, textColor=GRAY, alignment=TA_CENTER, spaceAfter=4)))
-    _total_articles = sum(len(t['articles']) for t in TOPICS)
+    _total_articles = sum(min(2, len(t['articles'])) for t in TOPICS)
     story.append(Paragraph(zsp(f'共收錄 {_total_articles} 篇文章'), ParagraphStyle(
         'CoverSub3b', fontName=ZH_BOLD, fontSize=10.5, leading=16, textColor=ACCENT, alignment=TA_CENTER, spaceAfter=4)))
     story.append(Spacer(1, 20))
     story.append(Paragraph(zsp('使用情境：軟體工程師快速會前吸收，內容含逐段中英對照翻譯＋單字文法筆記＋重點整理'), ParagraphStyle(
         'CoverSub4', fontName=ZH, fontSize=10, leading=16, textColor=GRAY, alignment=TA_CENTER)))
 
-    # Topic pages
+    # Topic pages — user asked to go back to the 2 most important/hot articles per topic
+    MAX_PER_TOPIC = 2
     for topic in TOPICS:
         story.append(PageBreak())
         story.extend(topic_header(topic['name_zh'], topic['name_en'], f"資料來源日期：{topic['date']}"))
-        for i, art in enumerate(topic['articles'], start=1):
+        for i, art in enumerate(topic['articles'][:MAX_PER_TOPIC], start=1):
             story.extend(article_block(i, art))
 
     # Summary section
